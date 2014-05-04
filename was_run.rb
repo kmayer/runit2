@@ -18,7 +18,13 @@ class WasRun < TestCase
   end
 end
 
-test = WasRun.new('testMethod')
-puts test.wasRun.inspect
-test.run
-print test.wasRun.inspect
+class TestCaseTest < TestCase
+  def test_is_running
+    test = WasRun.new('testMethod')
+    raise unless !test.wasRun
+    test.run
+    raise unless test.wasRun
+  end
+end
+
+TestCaseTest.new('test_is_running').run
