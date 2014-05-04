@@ -8,6 +8,7 @@ class TestCase
   def run
     self.set_up
     self.public_send(@test_method)
+    self.tear_down
   end
 
   def set_up
