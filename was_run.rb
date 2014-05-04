@@ -3,9 +3,12 @@ class WasRun
 
   def initialize(test)
   end
+
+  def testMethod
+  end
 end
 
 test = WasRun.new('testMethod')
-puts test.wasRun
+puts test.wasRun.inspect
 test.testMethod
-print test.wasRun
+print test.wasRun.inspect
