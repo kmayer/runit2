@@ -1,4 +1,6 @@
 class WasRun
+  attr_reader :wasRun
+
   def initialize(test)
   end
 end
