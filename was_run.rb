@@ -25,6 +25,13 @@ class TestCaseTest < TestCase
     test.run
     raise unless test.wasRun
   end
+
+  def test_is_set_up
+    test = WasRun.new('testMethod')
+    test.run
+    raise unless test.wasSetup
+  end
 end
 
 TestCaseTest.new('test_is_running').run
+TestCaseTest.new('test_is_set_up').run
