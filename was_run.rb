@@ -28,15 +28,19 @@ class WasRun < TestCase
 end
 
 class TestCaseTest < TestCase
+  attr_reader :test
+  
+  def set_up
+    @test = WasRun.new('testMethod')
+  end
+
   def test_is_running
-    test = WasRun.new('testMethod')
     raise unless !test.wasRun
     test.run
     raise unless test.wasRun
   end
 
   def test_is_set_up
-    test = WasRun.new('testMethod')
     test.run
     raise unless test.wasSetup
   end
