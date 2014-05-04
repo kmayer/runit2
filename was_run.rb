@@ -1,11 +1,13 @@
 class WasRun
   attr_accessor :wasRun
-
+  attr_reader :test_method
+  
   def initialize(test)
+    @test_method = test
   end
 
   def run
-    testMethod
+    self.public_send(@test_method)
   end
 
   def testMethod
