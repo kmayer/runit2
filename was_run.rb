@@ -4,6 +4,10 @@ class WasRun
   def initialize(test)
   end
 
+  def run
+    testMethod
+  end
+
   def testMethod
     self.wasRun = true
   end
@@ -11,5 +15,5 @@ end
 
 test = WasRun.new('testMethod')
 puts test.wasRun.inspect
-test.testMethod
+test.run
 print test.wasRun.inspect
