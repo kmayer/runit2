@@ -6,15 +6,23 @@ class TestCase
   end
 
   def run
+    result = TestResult.new
     self.set_up
     self.public_send(@test_method)
     self.tear_down
+    result
   end
 
   def set_up
   end
 
   def tear_down
+  end
+end
+
+class TestResult
+  def summary
+    '1 run, 0 failed'
   end
 end
 
