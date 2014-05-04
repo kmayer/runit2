@@ -7,6 +7,7 @@ class TestCase
 
   def run
     result = TestResult.new
+    result.test_started
     self.set_up
     self.public_send(@test_method)
     self.tear_down
@@ -21,8 +22,18 @@ class TestCase
 end
 
 class TestResult
+  attr_accessor :run_count
+
+  def initialize
+    @run_count = 0
+  end
+
+  def test_started
+    @run_count += 1
+  end
+
   def summary
-    '1 run, 0 failed'
+    '%d run, 0 failed' % run_count
   end
 end
 
