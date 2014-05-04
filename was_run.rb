@@ -13,6 +13,9 @@ class TestCase
 
   def set_up
   end
+
+  def tear_down
+  end
 end
 
 class WasRun < TestCase
@@ -29,6 +32,10 @@ class WasRun < TestCase
 
   def testMethod
     @log << 'testMethod'
+  end
+
+  def tear_down
+    @log << 'tear_down'
   end
 end
 
