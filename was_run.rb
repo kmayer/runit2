@@ -6,13 +6,21 @@ class TestCase
   end
 
   def run
+    self.set_up
     self.public_send(@test_method)
+  end
+
+  def set_up
   end
 end
 
 class WasRun < TestCase
   attr_accessor :wasRun
   attr_accessor :wasSetup
+
+  def set_up
+    self.wasSetup = true
+  end
 
   def testMethod
     self.wasRun = true
