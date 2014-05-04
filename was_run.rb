@@ -16,10 +16,15 @@ end
 
 class WasRun < TestCase
   attr_accessor :wasRun
-  attr_accessor :wasSetup
+  attr_accessor :log
+
+  def initialize(*)
+    super
+    @log = []
+  end
 
   def set_up
-    self.wasSetup = true
+    @log << 'set_up'
   end
 
   def testMethod
@@ -41,7 +46,7 @@ class TestCaseTest < TestCase
 
   def test_is_set_up
     test.run
-    raise unless test.wasSetup
+    raise unless test.log == ['set_up']
   end
 end
 
