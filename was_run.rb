@@ -12,6 +12,7 @@ end
 
 class WasRun < TestCase
   attr_accessor :wasRun
+  attr_accessor :wasSetup
 
   def testMethod
     self.wasRun = true
