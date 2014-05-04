@@ -9,7 +9,11 @@ class TestCase
     result = TestResult.new
     result.test_started
     self.set_up
-    self.public_send(@test_method)
+    begin
+      self.public_send(@test_method)
+    rescue
+      result.test_failed
+    end
     self.tear_down
     result
   end
@@ -114,4 +118,4 @@ TestCaseTest.new('test_is_set_up').run
 TestCaseTest.new('test_is_torn_down').run
 TestCaseTest.new('test_reports_results').run
 TestCaseTest.new('test_formats_failed_results').run
-# TestCaseTest.new('test_reports_failed_results').run
+TestCaseTest.new('test_reports_failed_results').run
