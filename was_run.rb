@@ -47,7 +47,13 @@ class TestCaseTest < TestCase
     test.run
     raise unless test.log.first == 'set_up'
   end
+
+  def test_is_torn_down
+    test.run
+    raise unless test.log.last == 'tear_down'
+  end
 end
 
 TestCaseTest.new('test_is_running').run
 TestCaseTest.new('test_is_set_up').run
+TestCaseTest.new('test_is_torn_down').run
