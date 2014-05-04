@@ -1,10 +1,11 @@
 class WasRun
-  attr_reader :wasRun
+  attr_accessor :wasRun
 
   def initialize(test)
   end
 
   def testMethod
+    self.wasRun = true
   end
 end
 
