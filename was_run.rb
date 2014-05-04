@@ -1,4 +1,6 @@
 class WasRun
+  def initialize(test)
+  end
 end
 
 test = WasRun.new('testMethod')
