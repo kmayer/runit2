@@ -89,6 +89,13 @@ class TestCaseTest < TestCase
     raise unless result.summary == '1 run, 0 failed'
   end
 
+  def test_formats_failed_results
+    result = TestResult.new
+    result.test_started
+    result.test_failed
+    raise unless result.summary == '1 run, 1 failed'
+  end
+
   def test_reports_failed_results
     @test = WasRun.new('testBrokenMethod')
     result = test.run
@@ -100,4 +107,5 @@ TestCaseTest.new('test_is_running').run
 TestCaseTest.new('test_is_set_up').run
 TestCaseTest.new('test_is_torn_down').run
 TestCaseTest.new('test_reports_results').run
+TestCaseTest.new('test_formats_failed_results').run
 TestCaseTest.new('test_reports_failed_results').run
