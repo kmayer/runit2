@@ -15,12 +15,12 @@ class TestCase
       self.set_up
       self.public_send(example)
     rescue AssertionError => e
-      result.test_failed
       puts e.inspect
+      result.test_failed
     rescue => e
+      puts e.inspect
       raise TestError unless calls_under_test?(e)
       result.test_failed
-      puts e.inspect
     end
     self.tear_down
     result
