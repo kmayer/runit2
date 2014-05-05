@@ -10,7 +10,7 @@ class TestCase
     result.test_started
     self.set_up
     begin
-      self.public_send(@test_method)
+      self.public_send(test_method)
     rescue
       result.test_failed
     end
