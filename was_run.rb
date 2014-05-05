@@ -65,18 +65,30 @@ class TestResult
 end
 
 class TestSuite
-  attr_reader :example_class
+  attr_reader :example_classes
 
-  def initialize(example_class)
-    @example_class = example_class
+  def initialize
+    @example_classes = []
+  end
+
+  def <<(example_class)
+    @example_classes << example_class; self
   end
 
   def run
     result = TestResult.new
+    example_classes.each do |example_class|
+      run_example_class(example_class, result)
+    end
+    result
+  end
+
+  private
+
+  def run_example_class(example_class, result)
     example_class.public_instance_methods(false).grep(/^test/).each do |example|
       example_class.new(example, result).run
     end
-    result
   end
 end
 
@@ -169,14 +181,15 @@ class TestCaseTest < TestCase
   end
 end
 
-puts TestSuite.new(TestCaseTest).run.summary
-
 class TestSuiteTest < TestCase
   def test_suite_runs_all_the_tests
-    suite = TestSuite.new(WasRun)
+    suite = TestSuite.new
+    suite << WasRun
     result = suite.run
     raise AssertionError unless result.summary == '2 run, 1 failed'
   end
 end
 
-puts TestSuite.new(TestSuiteTest).run.summary
+suite = TestSuite.new
+suite << TestCaseTest << TestSuiteTest
+puts suite.run.summary
