@@ -11,20 +11,21 @@ class TestCase
   end
 
   def run
-    result.test_started
-    begin
-      self.set_up
-      self.public_send(example)
-    rescue AssertionError => e
-      puts e.inspect
-      result.test_failed
-    rescue => e
-      puts e.inspect
-      raise TestError unless calls_under_test?(e)
-      result.test_failed
+    result.tap do |result|
+      result.test_started
+      begin
+        self.set_up
+        self.public_send(example)
+      rescue AssertionError => e
+        puts e.inspect
+        result.test_failed
+      rescue => e
+        puts e.inspect
+        raise TestError unless calls_under_test?(e)
+        result.test_failed
+      end
+      self.tear_down
     end
-    self.tear_down
-    result
   end
 
   def set_up
@@ -76,11 +77,11 @@ class TestSuite
   end
 
   def run
-    result = TestResult.new
-    example_classes.each do |example_class|
-      run_example_class(example_class, result)
+    TestResult.new.tap do |result|
+      example_classes.each do |example_class|
+        run_example_class(example_class, result)
+      end
     end
-    result
   end
 
   private
