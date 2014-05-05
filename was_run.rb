@@ -2,6 +2,7 @@ class TestCase
   attr_reader :test_method
 
   class AssertionError < StandardError; end
+  class TestError < StandardError; end
 
   def initialize(test_method)
     @test_method = test_method
@@ -10,10 +11,13 @@ class TestCase
   def run
     result = TestResult.new
     result.test_started
-    self.set_up
     begin
+      self.set_up
       self.public_send(test_method)
     rescue AssertionError
+      result.test_failed
+    rescue => e
+      raise TestError unless calls_under_test?(e)
       result.test_failed
     end
     self.tear_down
@@ -24,6 +28,14 @@ class TestCase
   end
 
   def tear_down
+  end
+
+  private
+
+  def calls_under_test?(e)
+    stack_trace = e.backtrace_locations.map(&:base_label).take_while{|m| m != 'run'}
+
+    stack_trace[-2] == test_method || stack_trace[-1] == 'set_up'
   end
 end
 
@@ -66,7 +78,11 @@ class WasRun < TestCase
   end
 
   def testBrokenMethod
-    raise
+    sub_method
+  end
+
+  def sub_method
+    raise "Something went wrong"
   end
 
   def tear_down
@@ -140,4 +156,4 @@ TestCaseTest.new('test_is_torn_down').run
 TestCaseTest.new('test_reports_results').run
 TestCaseTest.new('test_formats_failed_results').run
 TestCaseTest.new('test_reports_failed_results').run
-# TestCaseTest.new('test_failed_setup_is_still_a_failure').run
+TestCaseTest.new('test_failed_setup_is_still_a_failure').run
