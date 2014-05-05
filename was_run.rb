@@ -1,11 +1,11 @@
 class TestCase
-  attr_reader :test_method
+  attr_reader :example
 
   class AssertionError < StandardError; end
   class TestError < StandardError; end
 
-  def initialize(test_method)
-    @test_method = test_method
+  def initialize(example)
+    @example = example
   end
 
   def run
@@ -13,7 +13,7 @@ class TestCase
     result.test_started
     begin
       self.set_up
-      self.public_send(test_method)
+      self.public_send(example)
     rescue AssertionError => e
       result.test_failed
       puts e.inspect
@@ -37,7 +37,7 @@ class TestCase
   def calls_under_test?(e)
     stack_trace = e.backtrace_locations.map(&:base_label).take_while{|m| m != 'run'}
 
-    stack_trace[-2] == test_method || stack_trace[-1] == 'set_up'
+    stack_trace[-2] == example || stack_trace[-1] == 'set_up'
   end
 end
 
