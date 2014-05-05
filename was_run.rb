@@ -1,15 +1,16 @@
 class TestCase
   attr_reader :example
+  attr_reader :result
 
   class AssertionError < StandardError; end
   class TestError < StandardError; end
 
-  def initialize(example)
+  def initialize(example, result = TestResult.new)
     @example = example
+    @result = result
   end
 
   def run
-    result = TestResult.new
     result.test_started
     begin
       self.set_up
@@ -37,7 +38,7 @@ class TestCase
   def calls_under_test?(e)
     stack_trace = e.backtrace_locations.map(&:base_label).take_while{|m| m != 'run'}
 
-    stack_trace[-2] == example || stack_trace[-1] == 'set_up'
+    stack_trace[-2] == example.to_s || stack_trace[-1] == 'set_up'
   end
 end
 
@@ -60,6 +61,22 @@ class TestResult
 
   def summary
     '%d run, %d failed' % [run_count, failed_count]
+  end
+end
+
+class TestSuite
+  attr_reader :example_class
+
+  def initialize(example_class)
+    @example_class = example_class
+  end
+
+  def run
+    result = TestResult.new
+    example_class.public_instance_methods(false).grep(/^test/).each do |example|
+      example_class.new(example, result).run
+    end
+    result
   end
 end
 
@@ -168,5 +185,4 @@ class TestSuiteTest < TestCase
   end
 end
 
-results = TestSuiteTest.new('test_suite_runs_all_the_tests').run
-puts results.summary
+puts TestSuiteTest.new('test_suite_runs_all_the_tests').run.summary
