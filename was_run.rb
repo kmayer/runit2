@@ -169,13 +169,7 @@ class TestCaseTest < TestCase
   end
 end
 
-puts TestCaseTest.new('test_is_running').run.summary
-puts TestCaseTest.new('test_is_set_up').run.summary
-puts TestCaseTest.new('test_is_torn_down').run.summary
-puts TestCaseTest.new('test_reports_results').run.summary
-puts TestCaseTest.new('test_formats_failed_results').run.summary
-puts TestCaseTest.new('test_reports_failed_results').run.summary
-puts TestCaseTest.new('test_failed_setup_is_still_a_failure').run.summary
+puts TestSuite.new(TestCaseTest).run.summary
 
 class TestSuiteTest < TestCase
   def test_suite_runs_all_the_tests
