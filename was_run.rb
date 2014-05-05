@@ -179,4 +179,4 @@ class TestSuiteTest < TestCase
   end
 end
 
-puts TestSuiteTest.new('test_suite_runs_all_the_tests').run.summary
+puts TestSuite.new(TestSuiteTest).run.summary
