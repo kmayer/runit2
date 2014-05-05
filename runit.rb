@@ -1,9 +1,25 @@
+class TestError < StandardError; end
+
+module Assertions
+  class AssertionError < StandardError; end
+
+  def assert(assertion, explanation = nil)
+    return if assertion
+    message = "#{example}: #{explanation} [FAIL]"
+    $stderr.puts message
+    raise AssertionError, message
+  end
+
+  def assert_equal(result, expected, explanation = nil)
+    message = ["#{result.inspect} should have equaled #{expected.inspect}", explanation].join(': ')
+    assert(result == expected, message)
+  end
+end
+
 class TestCase
+  include Assertions
   attr_reader :example
   attr_reader :result
-
-  class AssertionError < StandardError; end
-  class TestError < StandardError; end
 
   def initialize(example, result = TestResult.new)
     @example = example
@@ -17,7 +33,6 @@ class TestCase
         self.set_up
         self.public_send(example)
       rescue AssertionError => e
-        puts e.inspect
         result.test_failed
       rescue => e
         puts e.inspect
