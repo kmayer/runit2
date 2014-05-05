@@ -1,6 +1,8 @@
 class TestCase
   attr_reader :test_method
 
+  class AssertionError < StandardError; end
+
   def initialize(test_method)
     @test_method = test_method
   end
@@ -11,7 +13,7 @@ class TestCase
     self.set_up
     begin
       self.public_send(test_method)
-    rescue
+    rescue AssertionError
       result.test_failed
     end
     self.tear_down
@@ -72,6 +74,19 @@ class WasRun < TestCase
   end
 end
 
+class WontRun < TestCase
+  def set_up
+    sub_method
+  end
+
+  def sub_method
+    raise
+  end
+
+  def testMethod
+  end
+end
+
 class TestCaseTest < TestCase
   attr_reader :test
 
@@ -81,35 +96,41 @@ class TestCaseTest < TestCase
 
   def test_is_running
     test.run
-    raise unless test.log.include?('testMethod')
+    raise AssertionError unless test.log.include?('testMethod')
   end
 
   def test_is_set_up
     test.run
-    raise unless test.log.first == 'set_up'
+    raise AssertionError unless test.log.first == 'set_up'
   end
 
   def test_is_torn_down
     test.run
-    raise unless test.log.last == 'tear_down'
+    raise AssertionError unless test.log.last == 'tear_down'
   end
 
   def test_reports_results
     result = test.run
-    raise unless result.summary == '1 run, 0 failed'
+    raise AssertionError unless result.summary == '1 run, 0 failed'
   end
 
   def test_formats_failed_results
     result = TestResult.new
     result.test_started
     result.test_failed
-    raise unless result.summary == '1 run, 1 failed'
+    raise AssertionError unless result.summary == '1 run, 1 failed'
   end
 
   def test_reports_failed_results
     @test = WasRun.new('testBrokenMethod')
     result = test.run
-    raise unless result.summary == '1 run, 1 failed'
+    raise AssertionError unless result.summary == '1 run, 1 failed'
+  end
+
+  def test_failed_setup_is_still_a_failure
+    @test = WontRun.new('testMethod')
+    result = test.run
+    raise AssertionError unless result.summary == '1 run, 1 failed'
   end
 end
 
@@ -119,3 +140,4 @@ TestCaseTest.new('test_is_torn_down').run
 TestCaseTest.new('test_reports_results').run
 TestCaseTest.new('test_formats_failed_results').run
 TestCaseTest.new('test_reports_failed_results').run
+# TestCaseTest.new('test_failed_setup_is_still_a_failure').run
