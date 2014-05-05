@@ -150,10 +150,10 @@ class TestCaseTest < TestCase
   end
 end
 
-TestCaseTest.new('test_is_running').run
-TestCaseTest.new('test_is_set_up').run
-TestCaseTest.new('test_is_torn_down').run
-TestCaseTest.new('test_reports_results').run
-TestCaseTest.new('test_formats_failed_results').run
-TestCaseTest.new('test_reports_failed_results').run
-TestCaseTest.new('test_failed_setup_is_still_a_failure').run
+puts TestCaseTest.new('test_is_running').run.summary
+puts TestCaseTest.new('test_is_set_up').run.summary
+puts TestCaseTest.new('test_is_torn_down').run.summary
+puts TestCaseTest.new('test_reports_results').run.summary
+puts TestCaseTest.new('test_formats_failed_results').run.summary
+puts TestCaseTest.new('test_reports_failed_results').run.summary
+puts TestCaseTest.new('test_failed_setup_is_still_a_failure').run.summary
