@@ -14,11 +14,13 @@ class TestCase
     begin
       self.set_up
       self.public_send(test_method)
-    rescue AssertionError
+    rescue AssertionError => e
       result.test_failed
+      puts e.inspect
     rescue => e
       raise TestError unless calls_under_test?(e)
       result.test_failed
+      puts e.inspect
     end
     self.tear_down
     result
@@ -82,7 +84,7 @@ class WasRun < TestCase
   end
 
   def sub_method
-    raise "Something went wrong"
+    raise "broken method"
   end
 
   def tear_down
@@ -96,7 +98,7 @@ class WontRun < TestCase
   end
 
   def sub_method
-    raise
+    raise "won't run"
   end
 
   def testMethod
@@ -157,3 +159,14 @@ puts TestCaseTest.new('test_reports_results').run.summary
 puts TestCaseTest.new('test_formats_failed_results').run.summary
 puts TestCaseTest.new('test_reports_failed_results').run.summary
 puts TestCaseTest.new('test_failed_setup_is_still_a_failure').run.summary
+
+class TestSuiteTest < TestCase
+  def test_suite_runs_all_the_tests
+    suite = TestSuite.new(WasRun)
+    result = suite.run
+    raise AssertionError unless result.summary == '2 run, 1 failed'
+  end
+end
+
+results = TestSuiteTest.new('test_suite_runs_all_the_tests').run
+puts results.summary
