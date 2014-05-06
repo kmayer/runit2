@@ -102,6 +102,25 @@ class TestResultTest < TestCase
     @result.test_errored
     assert_equal @result.summary, '1 run, 0 failed, 1 error'
   end
+
+  def test_succeeded
+    @result.test_started
+    assert(@result.succeeded?)
+  end
+
+  def test_fails_if_never_run
+    assert(!@result.succeeded?)
+  end
+
+  def test_fails_if_there_is_a_failure
+    @result.test_failed
+    assert(!@result.succeeded?)
+  end
+
+  def test_fails_if_there_is_an_error
+    @result.test_errored
+    assert(!@result.succeeded?)
+  end
 end
 
 class TestSuiteTest < TestCase
@@ -172,5 +191,14 @@ class AssertionsTest < TestCase
 end
 
 suite = TestSuite.new
-suite << TestCaseTest << TestResultTest << TestSuiteTest << AssertionsTest
-puts suite.run.summary
+suite            <<
+  TestCaseTest   <<
+  TestResultTest <<
+  TestSuiteTest  <<
+  AssertionsTest
+
+result = suite.run
+
+puts result.summary
+
+exit(result.succeeded? ? 0 : 1)

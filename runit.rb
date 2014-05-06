@@ -81,6 +81,10 @@ class TestResult
     @error_count += 1
   end
 
+  def succeeded?
+    @run_count > 0 && @failed_count == 0 && @error_count == 0
+  end
+
   def summary
     if error_count > 0
       '%d run, %d failed, %d error' % [run_count, failed_count, error_count]
