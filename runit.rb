@@ -6,7 +6,7 @@ module Assertions
   def assert(assertion, explanation = nil)
     return if assertion
     message = "[FAIL] #{example}: #{explanation}"
-    logger.puts message.squeeze
+    logger.puts message.squeeze(' ')
     raise AssertionError, message
   end
 

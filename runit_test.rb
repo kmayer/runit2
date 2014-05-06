@@ -156,11 +156,11 @@ class AssertionsTest < TestCase
 
   def test_message_on_fail
     begin
-      assert(false, 'falsy')
+      assert(false, 'should have a message')
     rescue AssertionError => e
       @probe = e.message
     end
-    assert_equal @probe, "[FAIL] test_message_on_fail: falsy"
+    assert_equal @probe, "[FAIL] test_message_on_fail: should have a message"
   end
 
   def test_assert_equality
@@ -174,7 +174,7 @@ class AssertionsTest < TestCase
 
   def test_assert_inequality
     begin
-      assert_equal 1, 0
+      assert_equal 1, 0, 'should not be equal'
     rescue AssertionError
       @probe = :pinged
     end
@@ -183,23 +183,23 @@ class AssertionsTest < TestCase
 
   def test_message_on_inequality
     begin
-      assert_equal 1, 0, 'equality'
+      assert_equal 1, 0, 'should have a message'
     rescue AssertionError => e
       @probe = e.message
     end
-    assert_equal @probe, "[FAIL] test_message_on_inequality: 1 should have equaled 0: equality"
+    assert_equal @probe, "[FAIL] test_message_on_inequality: 1 should have equaled 0: should have a message"
   end
 end
 
 class LogOutputTest < TestCase
   def set_up
-    @logger = StringIO.new('')
+    @test_logger = StringIO.new('')
   end
 
   def test_logs_failures_to_logger
-    test = WasRun.new('testBrokenMethod', TestResult.new, @logger)
+    test = WasRun.new('testBrokenMethod', TestResult.new, @test_logger)
     test.run
-    assert_equal(@logger.string, "testBrokenMethod: #<RuntimeError: broken method>\n")
+    assert_equal(@test_logger.string, "testBrokenMethod: #<RuntimeError: broken method>\n[PASS] testBrokenMethod\n")
   end
 end
 
