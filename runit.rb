@@ -37,7 +37,7 @@ class TestCase
       rescue => e
         puts e.inspect
         raise TestError unless calls_under_test?(e)
-        result.test_failed
+        result.test_errored
       end
       self.tear_down
     end
@@ -61,10 +61,12 @@ end
 class TestResult
   attr_accessor :run_count
   attr_accessor :failed_count
+  attr_accessor :error_count
 
   def initialize
     @run_count = 0
     @failed_count = 0
+    @error_count = 0
   end
 
   def test_started
@@ -75,8 +77,16 @@ class TestResult
     @failed_count += 1
   end
 
+  def test_errored
+    @error_count += 1
+  end
+
   def summary
-    '%d run, %d failed' % [run_count, failed_count]
+    if error_count > 0
+      '%d run, %d failed, %d error' % [run_count, failed_count, error_count]
+    else
+      '%d run, %d failed' % [run_count, failed_count]
+    end
   end
 end
 

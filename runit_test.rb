@@ -16,6 +16,10 @@ class WasRun < TestCase
     @log << 'testMethod'
   end
 
+  def testFailedMethod
+    assert(false)
+  end
+
   def testBrokenMethod
     sub_method
   end
@@ -66,18 +70,11 @@ class TestCaseTest < TestCase
 
   def test_reports_results
     result = test.run
-    assert result.summary, '1 run, 0 failed'
-  end
-
-  def test_formats_failed_results
-    result = TestResult.new
-    result.test_started
-    result.test_failed
     assert_equal result.summary, '1 run, 0 failed'
   end
 
   def test_reports_failed_results
-    @test = WasRun.new('testBrokenMethod')
+    @test = WasRun.new('testFailedMethod')
     result = test.run
     assert_equal result.summary, '1 run, 1 failed'
   end
@@ -87,7 +84,24 @@ class TestCaseTest < TestCase
     result = test.run
     assert_equal result.summary, '1 run, 0 failed, 1 error'
   end
+end
 
+class TestResultTest < TestCase
+  def set_up
+    @result = TestResult.new
+  end
+
+  def test_formats_failed_results
+    @result.test_started
+    @result.test_failed
+    assert_equal @result.summary, '1 run, 1 failed'
+  end
+
+  def test_formats_errors
+    @result.test_started
+    @result.test_errored
+    assert_equal @result.summary, '1 run, 0 failed, 1 error'
+  end
 end
 
 class TestSuiteTest < TestCase
@@ -158,5 +172,5 @@ class AssertionsTest < TestCase
 end
 
 suite = TestSuite.new
-suite << TestCaseTest << TestSuiteTest << AssertionsTest
+suite << TestCaseTest << TestResultTest << TestSuiteTest << AssertionsTest
 puts suite.run.summary
