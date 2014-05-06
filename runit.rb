@@ -121,7 +121,7 @@ class TestSuite
   private
 
   def run_example_class(example_class)
-    example_class.public_instance_methods(false).grep(/^test/).each do |example|
+    example_class.public_instance_methods(false).grep(/^test.+/).each do |example|
       example_class.new(example, result, logger).run
     end
   end
