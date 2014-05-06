@@ -1,4 +1,5 @@
 require 'runit'
+require 'stringio'
 
 class WasRun < TestCase
   attr_accessor :log
@@ -159,7 +160,7 @@ class AssertionsTest < TestCase
     rescue AssertionError => e
       @probe = e.message
     end
-    assert_equal @probe, "test_message_on_fail: falsy [FAIL]"
+    assert_equal @probe, "[FAIL] test_message_on_fail: falsy"
   end
 
   def test_assert_equality
@@ -186,7 +187,19 @@ class AssertionsTest < TestCase
     rescue AssertionError => e
       @probe = e.message
     end
-    assert_equal @probe, "test_message_on_inequality: 1 should have equaled 0: equality [FAIL]"
+    assert_equal @probe, "[FAIL] test_message_on_inequality: 1 should have equaled 0: equality"
+  end
+end
+
+class LogOutputTest < TestCase
+  def set_up
+    @logger = StringIO.new('')
+  end
+
+  def test_logs_failures_to_logger
+    test = WasRun.new('testBrokenMethod', TestResult.new, @logger)
+    test.run
+    assert_equal(@logger.string, "testBrokenMethod: #<RuntimeError: broken method>\n")
   end
 end
 
@@ -195,10 +208,12 @@ suite            <<
   TestCaseTest   <<
   TestResultTest <<
   TestSuiteTest  <<
-  AssertionsTest
+  AssertionsTest <<
+  LogOutputTest
 
 result = suite.run
 
+puts suite.logger.string
 puts result.summary
 
 exit(result.succeeded? ? 0 : 1)

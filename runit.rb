@@ -5,8 +5,8 @@ module Assertions
 
   def assert(assertion, explanation = nil)
     return if assertion
-    message = "#{example}: #{explanation} [FAIL]"
-    $stderr.puts message
+    message = "[FAIL] #{example}: #{explanation}"
+    logger.puts message.squeeze
     raise AssertionError, message
   end
 
@@ -20,10 +20,12 @@ class TestCase
   include Assertions
   attr_reader :example
   attr_reader :result
+  attr_reader :logger
 
-  def initialize(example, result = TestResult.new)
+  def initialize(example, result = TestResult.new, logger = StringIO.new)
     @example = example
     @result = result
+    @logger = logger
   end
 
   def run
@@ -35,7 +37,7 @@ class TestCase
       rescue AssertionError => e
         result.test_failed
       rescue => e
-        puts e.inspect
+        logger.puts "#{example}: #{e.inspect}"
         raise TestError unless calls_under_test?(e)
         result.test_errored
       end
@@ -96,9 +98,13 @@ end
 
 class TestSuite
   attr_reader :example_classes
+  attr_reader :result
+  attr_reader :logger
 
   def initialize
     @example_classes = []
+    @logger = StringIO.new
+    @result = TestResult.new
   end
 
   def <<(example_class)
@@ -106,18 +112,17 @@ class TestSuite
   end
 
   def run
-    TestResult.new.tap do |result|
-      example_classes.each do |example_class|
-        run_example_class(example_class, result)
-      end
+    example_classes.each do |example_class|
+      run_example_class(example_class)
     end
+    result
   end
 
   private
 
-  def run_example_class(example_class, result)
+  def run_example_class(example_class)
     example_class.public_instance_methods(false).grep(/^test/).each do |example|
-      example_class.new(example, result).run
+      example_class.new(example, result, logger).run
     end
   end
 end
