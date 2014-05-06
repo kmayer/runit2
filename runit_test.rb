@@ -56,12 +56,12 @@ class TestCaseTest < TestCase
 
   def test_is_set_up
     test.run
-    assert test.log.first, 'set_up'
+    assert_equal test.log.first, 'set_up'
   end
 
   def test_is_torn_down
     test.run
-    assert test.log.last, 'tear_down'
+    assert_equal test.log.last, 'tear_down'
   end
 
   def test_reports_results
@@ -73,19 +73,19 @@ class TestCaseTest < TestCase
     result = TestResult.new
     result.test_started
     result.test_failed
-    assert result.summary, '1 run, 1 failed'
+    assert_equal result.summary, '1 run, 0 failed'
   end
 
   def test_reports_failed_results
     @test = WasRun.new('testBrokenMethod')
     result = test.run
-    assert result.summary, '1 run, 1 failed'
+    assert_equal result.summary, '1 run, 1 failed'
   end
 
   def test_failed_setup_is_still_a_failure
     @test = WontRun.new('testMethod')
     result = test.run
-    assert result.summary, '1 run, 1 failed'
+    assert_equal result.summary, '1 run, 0 failed, 1 error'
   end
 
 end
@@ -95,7 +95,7 @@ class TestSuiteTest < TestCase
     suite = TestSuite.new
     suite << WasRun
     result = suite.run
-    assert result.summary, '2 run, 1 failed'
+    assert_equal result.summary, '3 run, 1 failed, 1 error'
   end
 end
 
@@ -117,7 +117,7 @@ class AssertionsTest < TestCase
     rescue AssertionError
       @probe = :pinged
     end
-    assert @probe, :pinged
+    assert_equal @probe, :pinged
   end
 
   def test_message_on_fail
@@ -126,7 +126,7 @@ class AssertionsTest < TestCase
     rescue AssertionError => e
       @probe = e.message
     end
-    assert_equal(@probe, "test_message_on_fail: falsy [FAIL]")
+    assert_equal @probe, "test_message_on_fail: falsy [FAIL]"
   end
 
   def test_assert_equality
@@ -135,25 +135,25 @@ class AssertionsTest < TestCase
     rescue AssertionError
       @probe = :pinged
     end
-    assert(@probe.nil?, "assert_equality should not raise on equality")
+    assert @probe.nil?, "assert_equality should not raise on equality"
   end
 
   def test_assert_inequality
     begin
-      assert_equal(1, 0)
+      assert_equal 1, 0
     rescue AssertionError
       @probe = :pinged
     end
-    assert(@probe == :pinged, "assert_equality should raise on inequality")
+    assert @probe == :pinged, "assert_equality should raise on inequality"
   end
 
   def test_message_on_inequality
     begin
-      assert_equal(1, 0, 'equality')
+      assert_equal 1, 0, 'equality'
     rescue AssertionError => e
       @probe = e.message
     end
-    assert_equal(@probe, "test_message_on_inequality: 1 should have equaled 0: equality [FAIL]")
+    assert_equal @probe, "test_message_on_inequality: 1 should have equaled 0: equality [FAIL]"
   end
 end
 
