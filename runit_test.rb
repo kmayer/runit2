@@ -134,8 +134,6 @@ class TestSuiteTest < TestCase
 end
 
 class AssertionsTest < TestCase
-  attr_accessor :probe
-
   def test_assert_truthiness
     begin
       assert(true)
