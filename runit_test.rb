@@ -99,7 +99,7 @@ class TestSuiteTest < TestCase
   end
 end
 
-class TestAssertionsTest < TestCase
+class AssertionsTest < TestCase
   attr_accessor :probe
 
   def test_assert_truthiness
@@ -158,5 +158,5 @@ class TestAssertionsTest < TestCase
 end
 
 suite = TestSuite.new
-suite << TestCaseTest << TestSuiteTest << TestAssertionsTest
+suite << TestCaseTest << TestSuiteTest << AssertionsTest
 puts suite.run.summary
