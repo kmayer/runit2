@@ -42,6 +42,7 @@ class TestCase
         result.test_errored
       end
       self.tear_down
+      logger.puts "[PASS] #{example}"
     end
   end
 
